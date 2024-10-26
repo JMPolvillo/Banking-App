@@ -7,8 +7,10 @@ import com.hackathon.bankingapp.Repositories.IUserRepository;
 import com.hackathon.bankingapp.Security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,13 +47,26 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public String login(LoginDTO dto) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(dto.getIdentifier(), dto.getPassword())
-        );
+    public String login(LoginDTO loginDTO) {
+        try {
+            if (!userRepository.existsByEmail(loginDTO.getIdentifier()) &&
+                    !userRepository.existsByAccountNumber(loginDTO.getIdentifier())) {
+                throw new IllegalArgumentException("User not found for the given identifier: " + loginDTO.getIdentifier());
+            }
 
-        return jwtTokenProvider.generateToken(authentication);
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginDTO.getIdentifier(),
+                            loginDTO.getPassword()
+                    )
+            );
+
+            return jwtTokenProvider.generateToken(authentication);
+        } catch (AuthenticationException e) {
+            throw new BadCredentialsException("Bad credentials");
+        }
     }
+
 
     public User getUserInfo(String accountNumber) {
         return userRepository.findByAccountNumber(accountNumber)

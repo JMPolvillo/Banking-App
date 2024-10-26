@@ -5,7 +5,9 @@ import com.hackathon.bankingapp.DTO.*;
 import com.hackathon.bankingapp.Entities.User;
 import com.hackathon.bankingapp.Services.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,14 +33,18 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginDTO dto) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginDTO loginDTO) {
         try {
-            String token = userService.login(dto);
+            String token = userService.login(loginDTO);
             Map<String, String> response = new HashMap<>();
             response.put("token", token);
             return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Bad credentials");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Bad credentials");
         }
     }
 
@@ -64,7 +70,6 @@ public class UserController {
 
     @GetMapping("/logout")
     public ResponseEntity<?> logout() {
-        // JWT tokens are stateless, so we don't need to do anything server-side
         return ResponseEntity.ok("Logged out successfully");
     }
 }
