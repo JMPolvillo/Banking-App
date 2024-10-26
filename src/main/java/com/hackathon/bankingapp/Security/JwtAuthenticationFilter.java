@@ -29,7 +29,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static final List<String> PUBLIC_URLS = Arrays.asList(
             "/api/users/register",
-            "/api/users/login"
+            "/api/users/login",
+            "/api/auth/password-reset/send-otp",
+            "/api/auth/password-reset/verify-otp",
+            "/api/auth/password-reset"
     );
 
     @Override
@@ -41,7 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String path = request.getRequestURI();
 
-            // Skip token validation for public endpoints
+            // Skip authentication for public endpoints
             if (isPublicUrl(path)) {
                 filterChain.doFilter(request, response);
                 return;
