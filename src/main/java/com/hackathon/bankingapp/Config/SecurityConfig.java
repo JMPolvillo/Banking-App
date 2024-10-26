@@ -48,6 +48,7 @@ public class SecurityConfig {
                                 "/api/users/login",
                                 "/api/auth/password-reset/**"
                         ).permitAll()
+                        .requestMatchers("/api/pin/**").authenticated()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

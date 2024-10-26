@@ -8,6 +8,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "users")
 @Data
@@ -47,4 +50,8 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
     private Account account;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "sourceUser", cascade = CascadeType.ALL)
+    private List<Transaction> transactions = new ArrayList<>();
 }

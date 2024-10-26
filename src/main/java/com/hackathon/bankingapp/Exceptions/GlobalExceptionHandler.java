@@ -132,4 +132,24 @@ public class GlobalExceptionHandler {
   public ResponseEntity<String> handlePinAlreadyExistsException(PinAlreadyExistsException e) {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
   }
+
+  @ExceptionHandler(AccountLockedException.class)
+  public ResponseEntity<String> handleAccountLockedException(AccountLockedException e) {
+    return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(e.getMessage());
+  }
+
+  @ExceptionHandler(UnauthorizedPinCreationException.class)
+  public ResponseEntity<String> handleUnauthorizedPinCreationException(UnauthorizedPinCreationException e) {
+    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+  }
+
+  @ExceptionHandler(InsufficientBalanceException.class)
+  public ResponseEntity<String> handleInsufficientBalanceException(InsufficientBalanceException e) {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+  }
+
+  @ExceptionHandler(InvalidTransactionException.class)
+  public ResponseEntity<String> handleInvalidTransactionException(InvalidTransactionException e) {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+  }
 }

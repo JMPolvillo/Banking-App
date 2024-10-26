@@ -1,6 +1,7 @@
 package com.hackathon.bankingapp.Controllers;
 
 import com.hackathon.bankingapp.DTO.CreatePinDTO;
+import com.hackathon.bankingapp.DTO.CreatePinForOtherDTO;
 import com.hackathon.bankingapp.DTO.UpdatePinDTO;
 import com.hackathon.bankingapp.Services.PinService;
 import jakarta.validation.Valid;
@@ -32,6 +33,14 @@ public class PinController {
             @Valid @RequestBody UpdatePinDTO dto,
             Authentication authentication) {
         String message = pinService.updatePin(authentication.getName(), dto);
+        return ResponseEntity.ok(Map.of("msg", message));
+    }
+
+    @PostMapping("/create-other")
+    public ResponseEntity<Map<String, String>> createPinForOther(
+            @Valid @RequestBody CreatePinForOtherDTO dto,
+            Authentication authentication) {
+        String message = pinService.createPinForOtherAccount(authentication.getName(), dto);
         return ResponseEntity.ok(Map.of("msg", message));
     }
 }
