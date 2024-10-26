@@ -32,4 +32,24 @@ public class GlobalExceptionHandler {
   public ResponseEntity<String> handlePasswordValidationException(PasswordValidationException e) {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
   }
+
+  @ExceptionHandler(JwtTokenMissingException.class)
+  public ResponseEntity<String> handleJwtTokenMissingException(JwtTokenMissingException e) {
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+  }
+
+  @ExceptionHandler(JwtTokenExpiredException.class)
+  public ResponseEntity<String> handleJwtTokenExpiredException(JwtTokenExpiredException e) {
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+  }
+
+  @ExceptionHandler(JwtTokenInvalidException.class)
+  public ResponseEntity<String> handleJwtTokenInvalidException(JwtTokenInvalidException e) {
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+  }
+
+  @ExceptionHandler(JwtAuthenticationException.class)
+  public ResponseEntity<String> handleJwtAuthenticationException(JwtAuthenticationException e) {
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+  }
 }

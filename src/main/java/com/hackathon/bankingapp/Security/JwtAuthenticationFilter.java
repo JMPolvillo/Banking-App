@@ -1,5 +1,7 @@
 package com.hackathon.bankingapp.Security;
 
+import com.hackathon.bankingapp.Exceptions.JwtAuthenticationException;
+import com.hackathon.bankingapp.Exceptions.JwtTokenMissingException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,7 +34,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String jwt = getJwtFromRequest(request);
 
-            if (StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)) {
+            if (!StringUtils.hasText(jwt)) {
+                throw new JwtTokenMissingException();
+            }
+
+            if (jwtTokenProvider.validateToken(jwt)) {
                 String username = jwtTokenProvider.getUsernameFromToken(jwt);
                 UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
 
@@ -48,6 +54,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         } catch (Exception e) {
             logger.error("Could not set user authentication in security context", e);
+            throw new JwtAuthenticationException("Authentication failed: " + e.getMessage());
         }
 
         filterChain.doFilter(request, response);
