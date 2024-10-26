@@ -1,13 +1,11 @@
 package com.hackathon.bankingapp.Controllers;
 
-
-import com.hackathon.bankingapp.DTO.*;
+import com.hackathon.bankingapp.DTO.LoginDTO;
+import com.hackathon.bankingapp.DTO.UserRegistrationDTO;
 import com.hackathon.bankingapp.Entities.User;
 import com.hackathon.bankingapp.Services.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,53 +21,30 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@Valid @RequestBody UserRegistrationDTO dto) {
-        try {
-            User user = userService.registerUser(dto);
-            return ResponseEntity.ok(user);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<User> register(@Valid @RequestBody UserRegistrationDTO dto) {
+        return ResponseEntity.ok(userService.registerUser(dto));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginDTO loginDTO) {
-        try {
-            String token = userService.login(loginDTO);
-            Map<String, String> response = new HashMap<>();
-            response.put("token", token);
-            return ResponseEntity.ok(response);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(e.getMessage());
-        } catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("Bad credentials");
-        }
+    public ResponseEntity<Map<String, String>> login(@Valid @RequestBody LoginDTO loginDTO) {
+        String token = userService.login(loginDTO);
+        Map<String, String> response = new HashMap<>();
+        response.put("token", token);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/user-info")
-    public ResponseEntity<?> getUserInfo(Authentication authentication) {
-        try {
-            User user = userService.getUserInfo(authentication.getName());
-            return ResponseEntity.ok(user);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<User> getUserInfo(Authentication authentication) {
+        return ResponseEntity.ok(userService.getUserInfo(authentication.getName()));
     }
 
     @GetMapping("/account-info")
     public ResponseEntity<?> getAccountInfo(Authentication authentication) {
-        try {
-            AccountInfoDTO accountInfo = userService.getAccountInfo(authentication.getName());
-            return ResponseEntity.ok(accountInfo);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        return ResponseEntity.ok(userService.getAccountInfo(authentication.getName()));
     }
 
     @GetMapping("/logout")
-    public ResponseEntity<?> logout() {
+    public ResponseEntity<String> logout() {
         return ResponseEntity.ok("Logged out successfully");
     }
 }

@@ -3,11 +3,11 @@ package com.hackathon.bankingapp.Services;
 import com.hackathon.bankingapp.DTO.*;
 import com.hackathon.bankingapp.Entities.User;
 import com.hackathon.bankingapp.Entities.Account;
+import com.hackathon.bankingapp.Exceptions.*;
 import com.hackathon.bankingapp.Repositories.IUserRepository;
 import com.hackathon.bankingapp.Security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -51,7 +51,7 @@ public class UserService {
         try {
             if (!userRepository.existsByEmail(loginDTO.getIdentifier()) &&
                     !userRepository.existsByAccountNumber(loginDTO.getIdentifier())) {
-                throw new IllegalArgumentException("User not found for the given identifier: " + loginDTO.getIdentifier());
+                throw new UserNotFoundException(loginDTO.getIdentifier());
             }
 
             Authentication authentication = authenticationManager.authenticate(
@@ -63,19 +63,18 @@ public class UserService {
 
             return jwtTokenProvider.generateToken(authentication);
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Bad credentials");
+            throw new BadCredentialsException();
         }
     }
 
-
     public User getUserInfo(String accountNumber) {
         return userRepository.findByAccountNumber(accountNumber)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException(accountNumber));
     }
 
     public AccountInfoDTO getAccountInfo(String accountNumber) {
         User user = userRepository.findByAccountNumber(accountNumber)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException(accountNumber));
 
         AccountInfoDTO dto = new AccountInfoDTO();
         dto.setAccountNumber(user.getAccountNumber());
@@ -85,32 +84,32 @@ public class UserService {
 
     private void validateRegistrationData(UserRegistrationDTO dto) {
         if (userRepository.existsByEmail(dto.getEmail())) {
-            throw new IllegalArgumentException("Email already exists");
+            throw new EmailAlreadyExistsException();
         }
         if (userRepository.existsByPhoneNumber(dto.getPhoneNumber())) {
-            throw new IllegalArgumentException("Phone number already exists");
+            throw new PhoneNumberAlreadyExistsException();
         }
         validatePassword(dto.getPassword());
     }
 
     private void validatePassword(String password) {
         if (password == null || password.length() < 8) {
-            throw new IllegalArgumentException("Password must be at least 8 characters long");
+            throw new PasswordValidationException("Password must be at least 8 characters long");
         }
         if (password.length() > 128) {
-            throw new IllegalArgumentException("Password must be less than 128 characters long");
+            throw new PasswordValidationException("Password must be less than 128 characters long");
         }
         if (!password.matches(".*[A-Z].*")) {
-            throw new IllegalArgumentException("Password must contain at least one uppercase letter");
+            throw new PasswordValidationException("Password must contain at least one uppercase letter");
         }
         if (!password.matches(".*[0-9].*")) {
-            throw new IllegalArgumentException("Password must contain at least one digit");
+            throw new PasswordValidationException("Password must contain at least one digit");
         }
         if (!password.matches(".*[!@#$%^&*(),.?\":{}|<>].*")) {
-            throw new IllegalArgumentException("Password must contain at least one special character");
+            throw new PasswordValidationException("Password must contain at least one special character");
         }
         if (password.contains(" ")) {
-            throw new IllegalArgumentException("Password cannot contain whitespace");
+            throw new PasswordValidationException("Password cannot contain whitespace");
         }
     }
 
