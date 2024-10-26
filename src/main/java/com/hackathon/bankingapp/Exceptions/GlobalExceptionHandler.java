@@ -117,4 +117,19 @@ public class GlobalExceptionHandler {
   public ResponseEntity<String> handleOtpMaxAttemptsExceededException(OtpMaxAttemptsExceededException e) {
     return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(e.getMessage());
   }
+
+  @ExceptionHandler(PinValidationException.class)
+  public ResponseEntity<String> handlePinValidationException(PinValidationException e) {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+  }
+
+  @ExceptionHandler(InvalidPinException.class)
+  public ResponseEntity<String> handleInvalidPinException(InvalidPinException e) {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+  }
+
+  @ExceptionHandler(PinAlreadyExistsException.class)
+  public ResponseEntity<String> handlePinAlreadyExistsException(PinAlreadyExistsException e) {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+  }
 }
