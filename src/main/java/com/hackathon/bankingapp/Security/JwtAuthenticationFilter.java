@@ -16,6 +16,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -25,6 +27,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final CustomUserDetailsService customUserDetailsService;
     private static final String BEARER_PREFIX = "Bearer ";
 
+    private static final List<String> PUBLIC_URLS = Arrays.asList(
+            "/api/users/register",
+            "/api/users/login"
+    );
+
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
@@ -32,6 +39,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             FilterChain filterChain) throws ServletException, IOException {
 
         try {
+            String path = request.getRequestURI();
+
+            // Skip token validation for public endpoints
+            if (isPublicUrl(path)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
             String jwt = getJwtFromRequest(request);
 
             if (!StringUtils.hasText(jwt)) {
@@ -66,5 +81,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return bearerToken.substring(BEARER_PREFIX.length());
         }
         return null;
+    }
+
+    private boolean isPublicUrl(String requestUrl) {
+        return PUBLIC_URLS.stream().anyMatch(requestUrl::equals);
     }
 }
