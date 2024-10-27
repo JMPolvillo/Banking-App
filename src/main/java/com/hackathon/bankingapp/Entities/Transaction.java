@@ -1,6 +1,5 @@
 package com.hackathon.bankingapp.Entities;
 
-import com.hackathon.bankingapp.Enums.TransactionType;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
