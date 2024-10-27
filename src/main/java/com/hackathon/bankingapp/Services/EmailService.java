@@ -59,7 +59,7 @@ public class EmailService {
             Thank you for using our investment services.
 
             Best Regards,
-            Investment Management Team of CaixaBank
+            Investment Management Team
             """,
                 userName,
                 quantity,
@@ -108,7 +108,7 @@ public class EmailService {
             Thank you for using our investment services.
 
             Best Regards,
-            Investment Management Team of CaixaBank
+            Investment Management Team
             """,
                 userName,
                 quantity,
