@@ -1,7 +1,6 @@
 package com.hackathon.bankingapp.Controllers;
 
-import com.hackathon.bankingapp.DTO.BuyAssetDTO;
-import com.hackathon.bankingapp.DTO.SellAssetDTO;
+import com.hackathon.bankingapp.DTO.*;
 import com.hackathon.bankingapp.Services.AssetService;
 import com.hackathon.bankingapp.Services.MarketService;
 import jakarta.validation.Valid;
@@ -40,6 +39,12 @@ public class AssetController {
     public ResponseEntity<Double> getNetWorth(Authentication authentication) {
         Double netWorth = assetService.calculateNetWorth(authentication.getName());
         return ResponseEntity.ok(netWorth);
+    }
+
+    @GetMapping("/assets")
+    public ResponseEntity<Map<String, Double>> getUserAssets(Authentication authentication) {
+        Map<String, Double> assets = assetService.getUserAssets(authentication.getName());
+        return ResponseEntity.ok(assets);
     }
 
     @GetMapping("/market/prices")

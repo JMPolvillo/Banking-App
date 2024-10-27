@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/pin")
+@RequestMapping("/api/account/pin")
 @RequiredArgsConstructor
 public class PinController {
 

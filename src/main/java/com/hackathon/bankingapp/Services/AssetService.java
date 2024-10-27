@@ -191,4 +191,11 @@ public class AssetService {
                 calculateNetWorth(user.getAccountNumber())
         );
     }
+
+    public Map<String, Double> getUserAssets(String accountNumber) {
+        User user = userRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new UserNotFoundException(accountNumber));
+
+        return userAssetRepository.findUserAssetBalances(user.getId());
+    }
 }
