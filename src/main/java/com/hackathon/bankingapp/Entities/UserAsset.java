@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserAsset {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;

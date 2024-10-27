@@ -25,15 +25,13 @@ public class SubscriptionService {
 
     @Transactional
     public String createSubscription(String accountNumber, CreateSubscriptionDTO dto) {
-        // Validate user and PIN
+
         User user = validateUserAndPin(accountNumber, dto.getPin());
 
-        // Validate amount against balance
         if (user.getAccount().getBalance() < dto.getAmount()) {
             throw new InsufficientBalanceException();
         }
 
-        // Create subscription
         Subscription subscription = new Subscription();
         subscription.setUser(user);
         subscription.setAmount(dto.getAmount());
@@ -47,7 +45,7 @@ public class SubscriptionService {
         return "Subscription created successfully.";
     }
 
-    @Scheduled(fixedDelay = 1000) // Check every second
+    @Scheduled(fixedDelay = 1000)
     @Transactional
     public void processSubscriptions() {
         Long currentTime = System.currentTimeMillis();
@@ -68,7 +66,6 @@ public class SubscriptionService {
         User user = subscription.getUser();
         Double balance = user.getAccount().getBalance();
 
-        // Check if user has sufficient balance
         if (balance < subscription.getAmount()) {
             log.warn("Insufficient balance for subscription: {}", subscription.getId());
             subscription.setActive(false);
@@ -76,11 +73,9 @@ public class SubscriptionService {
             throw new InsufficientBalanceException();
         }
 
-        // Process payment
         user.getAccount().setBalance(balance - subscription.getAmount());
         subscription.setLastExecutionTime(System.currentTimeMillis());
 
-        // Create transaction record
         Transaction transaction = new Transaction();
         transaction.setAmount(subscription.getAmount());
         transaction.setTransactionType(TransactionType.SUBSCRIPTION);
@@ -88,7 +83,6 @@ public class SubscriptionService {
         transaction.setSourceUser(user);
         transaction.setTransactionDate(System.currentTimeMillis());
 
-        // Save changes
         userRepository.save(user);
         subscriptionRepository.save(subscription);
     }

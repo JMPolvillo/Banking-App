@@ -101,7 +101,7 @@ public class TradingBotService {
 
     private void tryToSell(TradingBot bot, String symbol, Double currentPrice) {
         try {
-            // Get user's assets and check if they have any to sell
+
             Map<String, Double> userAssets = assetService.getUserAssets(
                     bot.getUser().getAccountNumber());
 

@@ -35,13 +35,13 @@ public class TradingBot {
 
     // Trading thresholds in percentage
     @Column(nullable = false)
-    private Double buyThreshold = 20.0;  // Buy when price drops 20%
+    private Double buyThreshold = 20.0;
 
     @Column(nullable = false)
-    private Double sellThreshold = 20.0;  // Sell when price rises 20%
+    private Double sellThreshold = 20.0;
 
     @Column(nullable = false)
-    private Double investmentAmount = 100.0;  // Default investment amount
+    private Double investmentAmount = 100.0;
 
     @Column(nullable = false)
     private Long createdAt;

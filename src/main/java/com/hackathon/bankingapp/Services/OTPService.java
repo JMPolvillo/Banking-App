@@ -37,7 +37,6 @@ public class OTPService {
         User user = userRepository.findByEmailOrAccountNumber(request.getIdentifier())
                 .orElseThrow(() -> new UserNotFoundException(request.getIdentifier()));
 
-        // Check daily OTP request limit
         int dailyRequests = otpRepository.countByIdentifierAndCreatedAtAfter(
                 request.getIdentifier(),
                 LocalDateTime.now().minusHours(24)
@@ -46,14 +45,12 @@ public class OTPService {
             throw new OtpLimitExceededException("Daily OTP request limit exceeded. Try again tomorrow.");
         }
 
-        // Check if user is in cooldown period
         LocalDateTime lastFailedAttempt = otpRepository.findLastFailedAttemptTime(request.getIdentifier());
         if (lastFailedAttempt != null &&
                 lastFailedAttempt.plusMinutes(COOLDOWN_MINUTES).isAfter(LocalDateTime.now())) {
             throw new OtpCooldownException("Too many failed attempts. Please wait before requesting a new OTP.");
         }
 
-        // Check for existing active OTP
         if (otpRepository.existsByIdentifierAndUsedFalse(request.getIdentifier())) {
             throw new OtpAlreadyExistsException();
         }
@@ -84,14 +81,12 @@ public class OTPService {
         OTP otp = otpRepository.findByIdentifierAndUsedFalse(request.getIdentifier())
                 .orElseThrow(() -> new OtpInvalidException());
 
-        // Check attempts
         if (otp.getAttempts() >= MAX_OTP_ATTEMPTS) {
             otp.setUsed(true);
             otpRepository.save(otp);
             throw new OtpMaxAttemptsExceededException();
         }
 
-        // Verify OTP
         if (!otp.getOtpCode().equals(request.getOtp())) {
             otp.setAttempts(otp.getAttempts() + 1);
             otpRepository.save(otp);

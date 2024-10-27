@@ -36,7 +36,7 @@ public class MarketService {
 
     public Double getPriceForAsset(String symbol) {
         try {
-            log.debug("Getting price for asset: '{}'", symbol); // Added quotes to see any spaces
+            log.debug("Getting price for asset: '{}'", symbol);
             Map<String, Double> prices = getAllPrices();
             log.debug("Available assets: {}", prices.keySet());
 
