@@ -50,7 +50,7 @@ public class SecurityConfig {
                                 "/api/account/market/prices/**"
                         ).permitAll()
                         .requestMatchers(
-                                "/api/pin/**",
+                                "/api/account/pin/**",
                                 "/api/account/**"
                         ).authenticated()
                         .anyRequest().authenticated())
