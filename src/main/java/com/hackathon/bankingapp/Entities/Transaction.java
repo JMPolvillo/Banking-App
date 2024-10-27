@@ -1,5 +1,6 @@
 package com.hackathon.bankingapp.Entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,10 +33,12 @@ public class Transaction {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "source_user_id")
+    @JsonIgnoreProperties({"transactions", "account", "hashedPassword", "pin"})
     private User sourceUser;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "target_user_id")
+    @JsonIgnoreProperties({"transactions", "account", "hashedPassword", "pin"})
     private User targetUser;
 
     @PrePersist

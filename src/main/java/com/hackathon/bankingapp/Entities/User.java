@@ -51,7 +51,7 @@ public class User {
     @JoinColumn(name = "account_id")
     private Account account;
 
-    @JsonManagedReference
     @OneToMany(mappedBy = "sourceUser", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("sourceUser")
     private List<Transaction> transactions = new ArrayList<>();
 }

@@ -1,24 +1,22 @@
 package com.hackathon.bankingapp.Security;
 
-import com.hackathon.bankingapp.Exceptions.JwtAuthenticationException;
-import com.hackathon.bankingapp.Exceptions.JwtTokenMissingException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.util.StringUtils;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -27,36 +25,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final CustomUserDetailsService customUserDetailsService;
     private static final String BEARER_PREFIX = "Bearer ";
 
-    private static final List<String> PUBLIC_URLS = Arrays.asList(
-            "/api/users/register",
-            "/api/users/login",
-            "/api/auth/password-reset/send-otp",
-            "/api/auth/password-reset/verify-otp",
-            "/api/auth/password-reset"
-    );
-
     @Override
-    protected void doFilterInternal(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain) throws ServletException, IOException {
-
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
         try {
             String path = request.getRequestURI();
 
-            // Skip authentication for public endpoints
             if (isPublicUrl(path)) {
                 filterChain.doFilter(request, response);
                 return;
             }
 
             String jwt = getJwtFromRequest(request);
+            log.debug("JWT Token: {}", jwt);
 
-            if (!StringUtils.hasText(jwt)) {
-                throw new JwtTokenMissingException();
-            }
-
-            if (jwtTokenProvider.validateToken(jwt)) {
+            if (StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)) {
                 String username = jwtTokenProvider.getUsernameFromToken(jwt);
                 UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
 
@@ -71,8 +54,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception e) {
-            logger.error("Could not set user authentication in security context", e);
-            throw new JwtAuthenticationException("Authentication failed: " + e.getMessage());
+            log.error("Could not set user authentication in security context", e);
         }
 
         filterChain.doFilter(request, response);
@@ -81,12 +63,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
-            return bearerToken.substring(BEARER_PREFIX.length());
+            return bearerToken.substring(BEARER_PREFIX.length()).trim();
         }
         return null;
     }
 
     private boolean isPublicUrl(String requestUrl) {
-        return PUBLIC_URLS.stream().anyMatch(requestUrl::equals);
+        return requestUrl.equals("/api/users/register") ||
+                requestUrl.equals("/api/users/login") ||
+                requestUrl.startsWith("/api/auth/password-reset");
     }
 }

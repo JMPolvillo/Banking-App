@@ -1,11 +1,11 @@
 package com.hackathon.bankingapp.Security;
 
-import com.hackathon.bankingapp.Config.JwtConfig;
 import com.hackathon.bankingapp.Exceptions.JwtTokenExpiredException;
 import com.hackathon.bankingapp.Exceptions.JwtTokenInvalidException;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -16,27 +16,32 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class JwtTokenProvider {
 
-    private final JwtConfig jwtConfig;
+    @Value("${jwt.secret}")
+    private String secret;
+
+    @Value("${jwt.expiration}")
+    private Long expiration;
+
+    @Value("${jwt.header}")
+    private String header;
+
+    @Value("${jwt.prefix}")
+    private String prefix;
 
     public String generateToken(Authentication authentication) {
         try {
             String username = authentication.getName();
-            log.debug("Generating token for username: {}", username);
-
             Date now = new Date();
-            Date expiryDate = new Date(now.getTime() + jwtConfig.getExpiration());
+            Date expiryDate = new Date(now.getTime() + expiration);
 
-            String token = Jwts.builder()
+            return Jwts.builder()
                     .setSubject(username)
                     .setIssuedAt(now)
                     .setExpiration(expiryDate)
-                    .signWith(SignatureAlgorithm.HS512, jwtConfig.getSecret())
+                    .signWith(SignatureAlgorithm.HS512, secret.getBytes())
                     .compact();
-
-            log.debug("Token generated successfully");
-            return token;
         } catch (Exception e) {
-            log.error("Error generating token: {}", e.getMessage(), e);
+            log.error("Error generating token", e);
             throw new JwtTokenInvalidException();
         }
     }
@@ -44,35 +49,34 @@ public class JwtTokenProvider {
     public String getUsernameFromToken(String token) {
         try {
             Claims claims = Jwts.parser()
-                    .setSigningKey(jwtConfig.getSecret())
+                    .setSigningKey(secret.getBytes())
                     .parseClaimsJws(token)
                     .getBody();
 
-            String username = claims.getSubject();
-            log.debug("Username extracted from token: {}", username);
-            return username;
+            return claims.getSubject();
         } catch (ExpiredJwtException e) {
-            log.error("Token expired");
+            log.error("JWT token expired", e);
             throw new JwtTokenExpiredException();
         } catch (Exception e) {
-            log.error("Error extracting username from token: {}", e.getMessage(), e);
+            log.error("Invalid token: {}", e.getMessage());
             throw new JwtTokenInvalidException();
         }
     }
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parser()
-                    .setSigningKey(jwtConfig.getSecret())
-                    .parseClaimsJws(token);
-            log.debug("Token validated successfully");
+            Jwts.parser().setSigningKey(secret.getBytes()).parseClaimsJws(token);
             return true;
-        } catch (SignatureException | MalformedJwtException | UnsupportedJwtException | IllegalArgumentException e) {
-            log.error("Invalid token: {}", e.getMessage(), e);
-            throw new JwtTokenInvalidException();
-        } catch (ExpiredJwtException e) {
-            log.error("Token expired");
-            throw new JwtTokenExpiredException();
+        } catch (Exception e) {
+            log.error("Invalid token: {}", e.getMessage());
+            return false;
         }
+    }
+
+    public String getTokenFromHeader(String headerValue) {
+        if (headerValue != null && headerValue.startsWith(prefix + " ")) {
+            return headerValue.substring((prefix + " ").length());
+        }
+        return null;
     }
 }
