@@ -152,4 +152,11 @@ public class GlobalExceptionHandler {
   public ResponseEntity<String> handleInvalidTransactionException(InvalidTransactionException e) {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
   }
+
+  @ExceptionHandler(MarketApiException.class)
+  public ResponseEntity<String> handleMarketApiException(MarketApiException e) {
+    return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+            .body(e.getMessage());
+  }
+
 }

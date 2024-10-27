@@ -1,6 +1,5 @@
 package com.hackathon.bankingapp.Config;
 
-
 import com.hackathon.bankingapp.Security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -46,7 +45,9 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/users/register",
                                 "/api/users/login",
-                                "/api/auth/password-reset/**"
+                                "/api/auth/password-reset/**",
+                                "/api/account/market/prices",
+                                "/api/account/market/prices/**"
                         ).permitAll()
                         .requestMatchers(
                                 "/api/pin/**",

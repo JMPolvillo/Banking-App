@@ -54,4 +54,12 @@ public class User {
     @OneToMany(mappedBy = "sourceUser", cascade = CascadeType.ALL)
     @JsonIgnoreProperties("sourceUser")
     private List<Transaction> transactions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("user")
+    private List<UserAsset> assets = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("user")
+    private List<AssetTransaction> assetTransactions = new ArrayList<>();
 }
