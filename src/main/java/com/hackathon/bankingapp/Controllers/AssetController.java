@@ -5,12 +5,14 @@ import com.hackathon.bankingapp.Services.AssetService;
 import com.hackathon.bankingapp.Services.MarketService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/account")
 @RequiredArgsConstructor
@@ -23,6 +25,7 @@ public class AssetController {
     public ResponseEntity<String> buyAsset(
             @Valid @RequestBody BuyAssetDTO dto,
             Authentication authentication) {
+        log.info("Received buy asset request: {}", dto);  // Add this line
         String message = assetService.buyAsset(authentication.getName(), dto);
         return ResponseEntity.ok(message);
     }

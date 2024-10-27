@@ -31,7 +31,6 @@ public interface ITransactionRepository extends JpaRepository<Transaction, Long>
     @Query("SELECT SUM(t.amount) FROM Transaction t WHERE t.sourceAccountNumber = :accountNumber AND t.transactionType = 'CASH_DEPOSIT'")
     Double getTotalDeposits(@Param("accountNumber") String accountNumber);
 
-    // Calculate total withdrawals for an account
     @Query("SELECT SUM(t.amount) FROM Transaction t WHERE t.sourceAccountNumber = :accountNumber AND t.transactionType = 'CASH_WITHDRAWAL'")
     Double getTotalWithdrawals(@Param("accountNumber") String accountNumber);
 

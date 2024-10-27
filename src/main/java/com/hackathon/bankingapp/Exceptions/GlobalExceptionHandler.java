@@ -159,4 +159,14 @@ public class GlobalExceptionHandler {
             .body(e.getMessage());
   }
 
+  @ExceptionHandler(SubscriptionException.class)
+  public ResponseEntity<String> handleSubscriptionException(SubscriptionException e) {
+    return ResponseEntity.badRequest().body(e.getMessage());
+  }
+
+  @ExceptionHandler(TradingBotException.class)
+  public ResponseEntity<String> handleTradingBotException(TradingBotException e) {
+    return ResponseEntity.badRequest().body(e.getMessage());
+  }
+
 }
