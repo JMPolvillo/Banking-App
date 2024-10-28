@@ -17,7 +17,7 @@ public class OTP {
     private String id;
 
     @Column(nullable = false)
-    private String identifier; // email or account number
+    private String identifier;
 
     @Column(nullable = false)
     private String otpCode;

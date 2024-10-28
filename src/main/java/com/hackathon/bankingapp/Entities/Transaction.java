@@ -1,6 +1,6 @@
 package com.hackathon.bankingapp.Entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,14 +31,14 @@ public class Transaction {
 
     private String targetAccountNumber;
 
+    @JsonBackReference(value = "user-source-transactions")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "source_user_id")
-    @JsonIgnoreProperties({"transactions", "account", "hashedPassword", "pin"})
     private User sourceUser;
 
+    @JsonBackReference(value = "user-target-transactions")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "target_user_id")
-    @JsonIgnoreProperties({"transactions", "account", "hashedPassword", "pin"})
     private User targetUser;
 
     @PrePersist

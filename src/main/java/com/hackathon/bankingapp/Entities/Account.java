@@ -24,7 +24,7 @@ public class Account {
     @Column(nullable = false)
     private Double balance = 0.0;
 
-    @JsonBackReference
-    @OneToOne(mappedBy = "account", fetch = FetchType.LAZY)
+    @JsonBackReference(value = "user-account")
+    @OneToOne(mappedBy = "account")
     private User user;
 }

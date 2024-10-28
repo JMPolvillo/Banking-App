@@ -1,6 +1,5 @@
 package com.hackathon.bankingapp.Entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -16,7 +15,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -46,26 +44,29 @@ public class User {
 
     private String pin;
 
-    @JsonManagedReference
+    @JsonManagedReference(value = "user-account")
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
     private Account account;
 
+    @JsonManagedReference(value = "user-transactions")
     @OneToMany(mappedBy = "sourceUser", cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("sourceUser")
     private List<Transaction> transactions = new ArrayList<>();
 
+    @JsonManagedReference(value = "user-assets")
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("user")
     private List<UserAsset> assets = new ArrayList<>();
 
+    @JsonManagedReference(value = "user-asset-transactions")
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("user")
     private List<AssetTransaction> assetTransactions = new ArrayList<>();
 
+    @JsonManagedReference(value = "user-subscriptions")
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Subscription> subscriptions = new ArrayList<>();
 
+    @JsonManagedReference(value = "user-trading-bot")
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private TradingBot tradingBot;
+
 }

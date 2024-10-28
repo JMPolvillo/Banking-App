@@ -1,5 +1,6 @@
 package com.hackathon.bankingapp.Entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,7 @@ public class TradingBot {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
+    @JsonBackReference(value = "user-trading-bot")
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -33,7 +35,6 @@ public class TradingBot {
     @Column(name = "last_price")
     private Map<String, Double> lastPrices = new HashMap<>();
 
-    // Trading thresholds in percentage
     @Column(nullable = false)
     private Double buyThreshold = 20.0;
 
