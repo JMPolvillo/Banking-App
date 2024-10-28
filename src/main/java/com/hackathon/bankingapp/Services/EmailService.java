@@ -44,23 +44,23 @@ public class EmailService {
         message.setTo(to);
         message.setSubject("Investment Purchase Confirmation");
         message.setText(String.format("""
-            Dear %s,
+Dear %s,
 
-            You have successfully purchased %.2f units of %s for a total amount of $%.2f.
+You have successfully purchased %.2f units of %s for a total amount of $%.2f.
 
-            Current holdings of %s: %.2f units
+Current holdings of %s: %.2f units
 
-            Summary of current assets:
-            - %s: %.2f units purchased at $%.2f
+Summary of current assets:
+- %s: %.2f units purchased at $%.2f
 
-            Account Balance: $%.2f
-            Net Worth: $%.2f
+Account Balance: $%.2f
+Net Worth: $%.2f
 
-            Thank you for using our investment services.
+Thank you for using our investment services.
 
-            Best Regards,
-            Investment Management Team
-            """,
+Best Regards,
+Investment Management Team
+""",
                 userName,
                 quantity,
                 symbol,
@@ -91,25 +91,25 @@ public class EmailService {
         message.setTo(to);
         message.setSubject("Investment Sale Confirmation");
         message.setText(String.format("""
-            Dear %s,
+Dear %s,
 
-            You have successfully sold %.2f units of %s.
+You have successfully sold %.2f units of %s.
 
-            Total Gain/Loss: $%.2f
+Total Gain/Loss: $%.2f
 
-            Remaining holdings of %s: %.2f units
+Remaining holdings of %s: %.2f units
 
-            Summary of current assets:
-            - %s: %.2f units purchased at $%.2f
+Summary of current assets:
+- %s: %.2f units purchased at $%.2f
 
-            Account Balance: $%.2f
-            Net Worth: $%.2f
+Account Balance: $%.2f
+Net Worth: $%.2f
 
-            Thank you for using our investment services.
+Thank you for using our investment services.
 
-            Best Regards,
-            Investment Management Team
-            """,
+Best Regards,
+Investment Management Team
+""",
                 userName,
                 quantity,
                 symbol,
