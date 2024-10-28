@@ -4,7 +4,7 @@ import com.hackathon.bankingapp.DTO.DepositDTO;
 import com.hackathon.bankingapp.DTO.TransferDTO;
 import com.hackathon.bankingapp.DTO.WithdrawDTO;
 import com.hackathon.bankingapp.Entities.Transaction;
-import com.hackathon.bankingapp.Entities.TransactionType;
+import com.hackathon.bankingapp.Utils.Enums.TransactionType;
 import com.hackathon.bankingapp.Entities.User;
 import com.hackathon.bankingapp.Exceptions.*;
 import com.hackathon.bankingapp.Repositories.ITransactionRepository;

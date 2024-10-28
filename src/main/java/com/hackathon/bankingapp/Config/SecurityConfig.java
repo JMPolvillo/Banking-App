@@ -50,11 +50,6 @@ public class SecurityConfig {
                                 "/api/account/market/prices",
                                 "/api/account/market/prices/**"
                         ).permitAll()
-                        .requestMatchers(
-                                "/api/account/pin/**",
-                                "/api/account/**",
-                                "/api/user-actions/**"
-                        ).authenticated()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

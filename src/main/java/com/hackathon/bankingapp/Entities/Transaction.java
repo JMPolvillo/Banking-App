@@ -1,6 +1,7 @@
 package com.hackathon.bankingapp.Entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.hackathon.bankingapp.Utils.Enums.TransactionType;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;

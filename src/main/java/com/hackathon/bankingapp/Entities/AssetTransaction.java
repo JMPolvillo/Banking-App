@@ -1,6 +1,7 @@
 package com.hackathon.bankingapp.Entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.hackathon.bankingapp.Utils.Enums.TransactionType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;

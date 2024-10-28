@@ -1,4 +1,4 @@
-package com.hackathon.bankingapp.Entities;
+package com.hackathon.bankingapp.Utils.Enums;
 
 public enum TransactionType {
     CASH_WITHDRAWAL,

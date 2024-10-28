@@ -7,6 +7,7 @@ import com.hackathon.bankingapp.Exceptions.*;
 import com.hackathon.bankingapp.Repositories.IUserAssetRepository;
 import com.hackathon.bankingapp.Repositories.IAssetTransactionRepository;
 import com.hackathon.bankingapp.Repositories.IUserRepository;
+import com.hackathon.bankingapp.Utils.Enums.TransactionType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;

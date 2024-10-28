@@ -1,6 +1,6 @@
 package com.hackathon.bankingapp.DTO;
 
-import com.hackathon.bankingapp.Entities.TransactionType;
+import com.hackathon.bankingapp.Utils.Enums.TransactionType;
 import lombok.Data;
 
 @Data

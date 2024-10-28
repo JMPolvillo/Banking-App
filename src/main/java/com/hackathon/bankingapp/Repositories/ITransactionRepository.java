@@ -2,7 +2,7 @@
 package com.hackathon.bankingapp.Repositories;
 
 import com.hackathon.bankingapp.Entities.Transaction;
-import com.hackathon.bankingapp.Entities.TransactionType;
+import com.hackathon.bankingapp.Utils.Enums.TransactionType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
